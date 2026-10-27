@@ -24,8 +24,10 @@
   }
   main { max-width: 640px; margin: 0 auto; }
   header { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 40px; }
-  h1 { font-size: 34px; font-weight: 700; letter-spacing: .1em; margin: 0; }
-  h1 span { color: var(--accent); }
+  h1 { font-size: clamp(26px, 7vw, 44px); hyphens: auto; overflow-wrap: break-word; font-weight: 800; line-height: 1.15; letter-spacing: .04em;
+    text-transform: uppercase; margin: 0 0 20px; }
+  .brand { font-size: 22px; font-weight: 700; letter-spacing: .1em; margin: 0; }
+  .brand span { color: var(--accent); }
   h2 { font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin: 36px 0 6px; }
   p { margin: 0 0 4px; }
   .headline { font-size: 22px; font-weight: 700; line-height: 1.35; margin-bottom: 8px; }
@@ -40,9 +42,9 @@
 </head>
 <body>
 <main>
+  <h1 id="title">Privacy Policy</h1>
   <header>
-    <h1>L<span>Y</span>NKO</h1>
-    <h1>Privacy Policy</h1>
+    <p class="brand">L<span>Y</span>NKO</p>
     <select id="lang" aria-label="Language">
       <option value="en">English</option>
       <option value="es-ES">Español (España)</option>
@@ -399,6 +401,28 @@
   var articles = document.querySelectorAll('article[data-locale]');
   var select = document.getElementById('lang');
   var available = Array.prototype.map.call(articles, function (a) { return a.dataset.locale; });
+  var title = document.getElementById('title');
+  // El título que busca Play Console, en el idioma de la página. Sin
+  // JavaScript se queda el inglés del HTML.
+  var TITLES = {
+    'en': 'Privacy Policy',
+    'es-ES': 'Política de privacidad',
+    'es-419': 'Política de privacidad',
+    'ca-ES': 'Política de privadesa',
+    'gl-ES': 'Política de privacidade',
+    'eu-ES': 'Pribatutasun-politika',
+    'de': 'Datenschutz\u00ADerklärung',
+    'fr': 'Politique de confidentialité',
+    'it': 'Informativa sulla privacy',
+    'pt-BR': 'Política de Privacidade',
+    'pt-PT': 'Política de Privacidade',
+    'ja': 'プライバシーポリシー',
+    'ko': '개인정보 처리방침',
+    'zh-CN': '隐私政策',
+    'zh-TW': '隱私權政策',
+    'ru': 'Политика конфиденци\u00ADальности',
+    'tr': 'Gizlilik Politikası'
+  };
 
   function show(locale) {
     Array.prototype.forEach.call(articles, function (a) {
@@ -406,6 +430,8 @@
     });
     document.documentElement.lang = locale;
     select.value = locale;
+    title.textContent = TITLES[locale] || TITLES.en;
+    document.title = 'Lynko — ' + title.textContent;
     try { localStorage.setItem('lynko-legal-lang', locale); } catch (e) {}
   }
 
